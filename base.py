@@ -7,6 +7,7 @@ from PIL import Image
 from PIL.ExifTags import TAGS
 import pprint
 import praw
+import re
 import tempfile
 import urllib.request
 

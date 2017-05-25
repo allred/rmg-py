@@ -12,7 +12,13 @@ def retrieve(url):
     suffix='.jpg',
   )
   print(file_temp.name)
-  urllib.request.urlretrieve(url, file_temp.name)
+  #urllib.request.urlretrieve(url, file_temp.name)
+  #out = imgur.get_image(url)
+  #print(out)
+  print(url)
+  m = re.search('^.*\/(\S+?)$', url)
+  print({'grp': m.group(0)})
+  return
   i = Image.open(file_temp.name)
   info = i._getexif()
   for tag, value in info.items():
@@ -26,6 +32,8 @@ for submission in subreddit.stream.submissions():
   pp.pprint(inspect.getmembers(submission))
   if submission.preview:
     #pp.pprint(submission.preview['images'][0]['resolutions'][-1]['url'])
-    url = submission.preview['images'][0]['resolutions'][-1]['url']
+    #url = submission.preview['images'][0]['resolutions'][-1]['url']
+    # check for imgur here
+    url = submission.url
     retrieve(url)
     print(submission.title)
