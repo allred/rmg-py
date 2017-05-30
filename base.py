@@ -7,7 +7,9 @@ from PIL import Image
 from PIL.ExifTags import TAGS
 import pprint
 import praw
+import random
 import re
+import string
 import tempfile
 import urllib.request
 
