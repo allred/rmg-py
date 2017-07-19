@@ -54,19 +54,37 @@ def get_rekog(path_img):
 for submission in subreddit.stream.submissions():
   #pp.pprint(inspect.getmembers(submission))
   #pp.pprint(submission.thumbnail)
-  if submission.preview:
-    #pp.pprint(submission.preview['images'][0]['resolutions'][-1]['url'])
-    #url = submission.preview['images'][0]['resolutions'][-1]['url']
-    #url_preview_reddit = submission.preview['images'][0]['resolutions'][0]['url'] 
-    url_preview_reddit = submission.preview['images'][0]['resolutions'][0]['url'] 
-    #print({"prev": url_preview_reddit})
-    file_reddit = retrieve_reddit(url_preview_reddit)
-    url_imgur = submission.url
-    #print({"url": url_imgur})
-    file_imgur = retrieve_imgur(url_imgur)
-    '''
-    #info = getexif(file_reddit)
-    print(submission.title)
-    '''
-    out_rekog = get_rekog(file_imgur.name) 
-    print({"rekog": out_rekog['Labels']})
+  if not submission.preview:
+    continue 
+  submission_processed = False
+  for top_level_comment in submission.comments:
+    #pp.pprint(inspect.getmembers(top_level_comment.author.name))
+    if top_level_comment.author.name == 'ratmongo':
+      print("{0} {1} previously replied to by {2}".format(submission.id, submission.title, top_level_comment.author.name))
+      submission_processed = True
+      break
+  if submission_processed:
+    continue 
+  #pp.pprint(submission.preview['images'][0]['resolutions'][-1]['url'])
+  #url = submission.preview['images'][0]['resolutions'][-1]['url']
+  #url_preview_reddit = submission.preview['images'][0]['resolutions'][0]['url'] 
+  url_preview_reddit = submission.preview['images'][0]['resolutions'][0]['url'] 
+  #print({"prev": url_preview_reddit})
+  file_reddit = retrieve_reddit(url_preview_reddit)
+  url_imgur = submission.url
+  #print({"url": url_imgur})
+  file_imgur = retrieve_imgur(url_imgur)
+  '''
+  #info = getexif(file_reddit)
+  print(submission.title)
+  '''
+  found_labels = False
+  out_rekog = get_rekog(file_imgur.name) 
+  labels = {}
+  if len(out_rekog['Labels']) > 0:
+    labels['rekog'] = out_rekog['Labels']
+    found_labels = True
+  if found_labels:
+    pass
+    submission.reply(str(labels))
+  print({"labels": labels})
