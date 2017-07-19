@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import boto3
+from google.cloud import vision
 from imgurpython import ImgurClient
 import inspect
 import os
@@ -26,6 +27,7 @@ reddit = praw.Reddit(
 subreddit = reddit.subreddit('ratmongo')
 
 rekog = boto3.client('rekognition')
+vision = vision.Client()
 
 def randstring(size=6, chars=string.ascii_uppercase + string.digits):
   return ''.join(random.choice(chars) for _ in range(size))

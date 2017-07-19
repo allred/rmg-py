@@ -23,7 +23,8 @@ def retrieve_imgur(url):
     suffix='.jpg',
   )
   print(file_temp.name)
-  m = re.search('^.*\/(\S+?)$', url)
+  m = re.search('^.*\/(\S+?)(\.jpg)*$', url)
+  #print({"m": m.group(1)})
   img = imgur.get_image(m.group(1))
   #pp.pprint(inspect.getmembers(img))
   url_img = img.link
@@ -41,6 +42,15 @@ def retrieve_reddit(url):
   urllib.request.urlretrieve(url, file_temp.name)
   return file_temp
 
+def get_rekog(path_img):
+  img_bytes = open(path_img, 'rb')
+  out = rekog.detect_labels(
+    Image={
+      "Bytes": img_bytes.read(),
+    }
+  )
+  return out
+
 for submission in subreddit.stream.submissions():
   #pp.pprint(inspect.getmembers(submission))
   #pp.pprint(submission.thumbnail)
@@ -49,10 +59,14 @@ for submission in subreddit.stream.submissions():
     #url = submission.preview['images'][0]['resolutions'][-1]['url']
     #url_preview_reddit = submission.preview['images'][0]['resolutions'][0]['url'] 
     url_preview_reddit = submission.preview['images'][0]['resolutions'][0]['url'] 
-    print(url_preview_reddit)
+    #print({"prev": url_preview_reddit})
     file_reddit = retrieve_reddit(url_preview_reddit)
     url_imgur = submission.url
+    #print({"url": url_imgur})
     file_imgur = retrieve_imgur(url_imgur)
-    #info = getexif(file_reddit)
+    '''
     #info = getexif(file_reddit)
     print(submission.title)
+    '''
+    out_rekog = get_rekog(file_imgur.name) 
+    print({"rekog": out_rekog['Labels']})
