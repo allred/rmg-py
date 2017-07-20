@@ -12,6 +12,7 @@ import random
 import re
 import string
 import tempfile
+import time
 import urllib.request
 
 imgur = ImgurClient(

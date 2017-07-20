@@ -51,20 +51,33 @@ def get_rekog(path_img):
   )
   return out
 
+def submission_has_preview(submission):
+  for n in range(4): 
+    time.sleep(n)
+    if not hasattr(submission, 'preview'):
+      print("no preview waiting {0}".format(n))
+    else:
+      return True 
+  else:
+      return False
+
 for submission in subreddit.stream.submissions():
   #pp.pprint(inspect.getmembers(submission))
   #pp.pprint(submission.thumbnail)
-  if not submission.preview:
-    continue 
   submission_processed = False
+  if not submission_has_preview(submission):
+    print("no preview")
+    break 
   for top_level_comment in submission.comments:
-    #pp.pprint(inspect.getmembers(top_level_comment.author.name))
+    #pp.pprint(inspect.getmembers(top_level_comment))
     if top_level_comment.author.name == 'ratmongo':
-      print("{0} {1} previously replied to by {2}".format(submission.id, submission.title, top_level_comment.author.name))
+      #pp.pprint(inspect.getmembers(top_level_comment))
+      print("'{0} {1}' previously replied to by {2}".format(submission.id, submission.title, top_level_comment.author.name))
       submission_processed = True
       break
   if submission_processed:
     continue 
+  print("howdy")
   #pp.pprint(submission.preview['images'][0]['resolutions'][-1]['url'])
   #url = submission.preview['images'][0]['resolutions'][-1]['url']
   #url_preview_reddit = submission.preview['images'][0]['resolutions'][0]['url'] 
@@ -84,7 +97,5 @@ for submission in subreddit.stream.submissions():
   if len(out_rekog['Labels']) > 0:
     labels['rekog'] = out_rekog['Labels']
     found_labels = True
-  if found_labels:
-    pass
-    submission.reply(str(labels))
+  submission.reply(str(labels))
   print({"labels": labels})
