@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import boto3
+import datetime
 from google.cloud import vision
 from imgurpython import ImgurClient
 import inspect

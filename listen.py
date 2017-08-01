@@ -4,7 +4,7 @@ from base import *
 #print(reddit.read_only)
 #print(subreddit.title)
 
-def getexif(file_temp):
+def get_exif(file_temp):
   i = Image.open(file_temp.name)
   # FIXME: imgur strips exif, get exif from the smallest reddit thumbnail
   exif = i._getexif()
@@ -52,45 +52,43 @@ def get_rekog(path_img):
   return out
 
 def submission_has_preview(submission):
+  print("waiting for preview: ", end="")
   for n in range(4): 
     time.sleep(n)
     if not hasattr(submission, 'preview'):
-      print("no preview waiting {0}".format(n))
+      print("{} ".format(n), end="")
     else:
+      print(" ")
       return True 
   else:
+      print(" ")
       return False
+
+def log_ts(s):
+  ts = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
+  print("{} {}".format(ts, s))
 
 for submission in subreddit.stream.submissions():
   #pp.pprint(inspect.getmembers(submission))
   #pp.pprint(submission.thumbnail)
   submission_processed = False
-  if not submission_has_preview(submission):
-    print("no preview")
-    break 
   for top_level_comment in submission.comments:
-    #pp.pprint(inspect.getmembers(top_level_comment))
     if top_level_comment.author.name == 'ratmongo':
-      #pp.pprint(inspect.getmembers(top_level_comment))
-      print("'{0} {1}' previously replied to by {2}".format(submission.id, submission.title, top_level_comment.author.name))
+      log_ts("'{0} {1}' previously replied to by {2}".format(submission.id, submission.title, top_level_comment.author.name))
       submission_processed = True
       break
+  if not submission_processed and not submission_has_preview(submission):
+    log_ts("'{0} {1}' no preview".format(submission.id, submission.title))
+    submission.reply("no image preview found")
+    submission_processed = True
   if submission_processed:
     continue 
-  print("howdy")
   #pp.pprint(submission.preview['images'][0]['resolutions'][-1]['url'])
   #url = submission.preview['images'][0]['resolutions'][-1]['url']
   #url_preview_reddit = submission.preview['images'][0]['resolutions'][0]['url'] 
-  url_preview_reddit = submission.preview['images'][0]['resolutions'][0]['url'] 
-  #print({"prev": url_preview_reddit})
-  file_reddit = retrieve_reddit(url_preview_reddit)
+  #file_reddit = retrieve_reddit(url_preview_reddit)
   url_imgur = submission.url
-  #print({"url": url_imgur})
   file_imgur = retrieve_imgur(url_imgur)
-  '''
-  #info = getexif(file_reddit)
-  print(submission.title)
-  '''
   found_labels = False
   out_rekog = get_rekog(file_imgur.name) 
   labels = {}
