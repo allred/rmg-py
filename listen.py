@@ -22,7 +22,7 @@ def retrieve_imgur(url):
     prefix='rmg-imgur-',
     suffix='.jpg',
   )
-  print(file_temp.name)
+  log_ts("{} -> {}".format(url, file_temp.name))
   m = re.search('^.*\/(\S+?)(\.jpg)*$', url)
   #print({"m": m.group(1)})
   img = imgur.get_image(m.group(1))
@@ -52,7 +52,7 @@ def get_rekog(path_img):
   return out
 
 def submission_has_preview(submission):
-  print("waiting for preview: ", end="")
+  print("'{} {}' waiting for preview: ".format(submission.id, submission.title, end=""))
   for n in range(4): 
     time.sleep(n)
     if not hasattr(submission, 'preview'):
