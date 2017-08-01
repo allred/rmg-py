@@ -22,7 +22,7 @@ def retrieve_imgur(url):
     prefix='rmg-imgur-',
     suffix='.jpg',
   )
-  log_ts("{} -> {}".format(url, file_temp.name))
+  log_ts(f"{url} -> {file_temp.name}")
   m = re.search('^.*\/(\S+?)(\.jpg)*$', url)
   #print({"m": m.group(1)})
   img = imgur.get_image(m.group(1))
@@ -52,11 +52,11 @@ def get_rekog(path_img):
   return out
 
 def submission_has_preview(submission):
-  print("'{} {}' waiting for preview: ".format(submission.id, submission.title, end=""))
+  print(f"'{submisson.id} {submission.title}' waiting for preview: ", end="")
   for n in range(4): 
     time.sleep(n)
     if not hasattr(submission, 'preview'):
-      print("{} ".format(n), end="")
+      print(f"{n} ", end="")
     else:
       print(" ")
       return True 
@@ -66,7 +66,7 @@ def submission_has_preview(submission):
 
 def log_ts(s):
   ts = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
-  print("{} {}".format(ts, s))
+  print(f"{ts} {s}")
 
 for submission in subreddit.stream.submissions():
   #pp.pprint(inspect.getmembers(submission))
@@ -74,11 +74,11 @@ for submission in subreddit.stream.submissions():
   submission_processed = False
   for top_level_comment in submission.comments:
     if top_level_comment.author.name == 'ratmongo':
-      log_ts("'{0} {1}' previously replied to by {2}".format(submission.id, submission.title, top_level_comment.author.name))
+      log_ts(f"'{submission.id} {submission.title}' previously replied to by {top_level_comment.author.name}")
       submission_processed = True
       break
   if not submission_processed and not submission_has_preview(submission):
-    log_ts("'{0} {1}' no preview".format(submission.id, submission.title))
+    log_ts(f"'{submission.id} {submission.title}' no preview")
     submission.reply("no image preview found")
     submission_processed = True
   if submission_processed:
