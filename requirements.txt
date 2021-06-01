@@ -36,4 +36,4 @@ s3transfer==0.1.10
 six==1.11.0
 sniffer==0.4.0
 update-checker==0.16
-urllib3==1.22
+urllib3==1.26.5
